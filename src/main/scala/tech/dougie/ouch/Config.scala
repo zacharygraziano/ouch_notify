@@ -55,6 +55,7 @@ object Config {
 
   final case class CognitoConfig(
     userPoolId: String,
+    userPoolGroup: String,
     cognitoClient: AWSCognitoIdentityProvider
   )
 
@@ -62,6 +63,7 @@ object Config {
     def load(): CognitoConfig = {
       CognitoConfig(
         config.getString("userPoolId"),
+        config.getString("userPoolGroup"),
         AWSCognitoIdentityProviderClient.builder().build()
       )
     }

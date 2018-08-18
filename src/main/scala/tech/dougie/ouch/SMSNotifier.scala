@@ -2,7 +2,7 @@ package tech.dougie.ouch
 
 import java.net.URL
 
-import com.amazonaws.services.cognitoidp.model.ListUsersRequest
+import com.amazonaws.services.cognitoidp.model.ListUsersInGroupRequest
 import com.amazonaws.services.s3.model.GeneratePresignedUrlRequest
 import com.twilio.`type`.PhoneNumber
 import com.twilio.rest.api.v2010.account.Message
@@ -15,12 +15,12 @@ class SMSNotifier(implicit config: Config, ec: ExecutionContext) extends LazyLog
 
   private def cognitoPhoneNumbers: Future[Seq[String]] = {
     val PhoneNumber = "phone_number"
-    val request = new ListUsersRequest()
-      .withAttributesToGet(PhoneNumber)
+    val request = new ListUsersInGroupRequest()
+      .withGroupName(config.cognitoConfig.userPoolGroup)
       .withUserPoolId(config.cognitoConfig.userPoolId)
     Future {
       config.cognitoConfig.cognitoClient
-        .listUsers(request)
+        .listUsersInGroup(request)
         .getUsers
         .asScala
         .flatMap(
